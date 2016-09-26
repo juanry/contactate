@@ -1,1 +1,192 @@
-Hello World!
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <title>Contactate - Tu lista de contactos</title>
+  <!-- CSS & ICON  -->
+  <link rel="shortcut icon" type="image/x-icon" href="static/img/icon.png" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="static/css/vendor/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="static/css/vendor/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+  <!-- SCRIPTS  -->
+  <script src="static/js/vendor/jquery-3.1.0.min.js"></script>
+  <script src="static/js/vendor/underscore-min.js"></script>
+  <script src="static/js/vendor/backbone-min.js"></script>
+  <script src="static/js/models/contacto-model.js"></script>
+  <script src="static/js/collections/contacto-collection.js"></script>
+  <script src="static/js/views/contactos-list-view.js"></script>
+  <script src="static/js/views/contacto-item-view.js"></script>
+  <script src="static/js/router.js"></script>
+</head>
+<body>
+  <nav class="white">
+    <div class="nav-wrapper">
+      <img id="logo-container" src="static/img/logo.png" />
+    </div>
+  </nav>
+  <div id="ui">
+  </div>
+  <div class="container">
+    <div class="col s12 m7" id="listaContactos">
+      <div class="card horizontal">
+        <div class="card-stacked">
+          <div class="card-content">
+            <table class="bordered" id="app">
+
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br><br>
+  </div>
+  <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+    <a class="btn-floating btn-large red waves-effect waves-light red modal-trigger" 
+    href="#modal-form-contacto">
+      <i class="large material-icons">person_add</i>
+    </a>
+
+  </div>
+</div>
+<footer class="page-footer blue">
+  <div class="footer-copyright">
+    <div class="container">
+      <center>Programación Web 2016, Desarrollado por Juan Britez & Vanessa Leguizamon</center>
+    </div>
+  </div>
+</footer>
+<div id="modal-form-contacto" class="modal">
+  <div class="modal-content ">
+    <h5 id="tituloModal">Agregar Contacto</h5>
+    <form class="col s12" id="formContacto" method="post">
+      <div class="row">
+        <div class="input-field col s4">
+          <i class="material-icons prefix blue600">account_circle</i>
+          <input placeholder="Añade un nombre" id="nombre" type="text" class="validate">
+        </div>
+        <div class="input-field col s4">
+          <input id="apellido" placeholder="Añade un apellido" type="text" class="validate">
+        </div>
+        <div class="input-field col s4">
+          <input id="alias" placeholder="Añade un Alias" type="text" class="validate">
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s4">
+          <i class="material-icons prefix blue600">email</i>
+          <input id="email" placeholder="Añade un correo" type="email" class="validate">
+        </div>
+        <div class="input-field col s4">
+          <i class="material-icons prefix blue600">call</i>
+          <input id="telefono" placeholder="Añade un numero de telefono" type="tel" class="validate">
+        </div>
+        <div class="input-field col s4">
+          <i class="material-icons prefix blue600">location_on</i>
+          <input id="direccion" placeholder="Añade una dirección" type="text" class="validate">
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <a onClick="onAdd()" class=" modal-action modal-close waves-effect waves-green btn-flat">Guardar</a>
+  </div>
+</div>
+<script src="static/js/vendor/materialize.js"></script>
+<script src="static/js/vendor/init.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('select').material_select();
+  $('.modal-trigger').leanModal();
+});
+</script>
+</body>
+<script type="text/template" id="searchTemplate">
+
+  <div class="row">
+    <form class="col s3">
+      <div class="input-field">
+        <input id="search" placeholder="Nombre o Apellido" onKeyUp="onTituloFilter()" value='<%= filter %>'>
+        <label for="search"><i class="material-icons blue600">search</i></label>
+      </div>
+    </form>
+    <div class="col s8"></div>
+    <div class="input-field col s1">
+      <select onChange="onChangeSortOrder()" id="sortField">
+        <option <% if(sortField === "nombre"){ %> selected <% } %> value="nombre">Nombre</option>
+        <option <% if(sortField === "apellido"){ %> selected <% } %> value="apellido">Apellido</option>
+      </select>
+    </div>
+  </div>
+</script>
+<script type="text/template" id="itemTemplate">
+
+  <td><%= nombre %></td>
+  <td><%= apellido %></td>
+  <td><%= telefono %></td>
+  <td><a onClick="onDelete(<%= id %>)"><i class="Tiny material-icons">delete</i></a>
+      <a onClick="viewDetalle(<%= id %>)"><i class="Tiny material-icons">info</i></a>
+  </td>
+
+</script>
+
+<script type="text/template" id="fichaTemplate">
+  <a href="#/contacto">< volver</a>
+  <h2><%= nombre %></h2>
+  <p>
+    <br/><br/>
+    by <strong><%= apellido %></strong>
+    <br/><br/>
+    <i><%= telefono %></i>
+  </p>
+</script>
+
+
+<script type="text/javascript">
+$(	function(){
+
+  var contactos = new ContactoList();
+  contactos.fetch({reset: true});
+  contactos.bind('reset',function(){
+    var bootstrap = {
+      data: contactos.models,
+    };
+    App.start(bootstrap);
+  });
+
+  //ui event listeners
+  onChangeSortOrder = function()
+  {
+    App.sortBy($('#sortField').val());
+  }
+
+  //ui event listeners
+  onTituloFilter=function()
+  {
+    App.filterBy($('#search').val());
+  }
+  onAdd=function()
+  {
+    var data = {};
+    $("#formContacto").find(':input').each(function() {
+         var elemento= this;
+         data[elemento.id] = elemento.value;
+
+       });
+    App.agregarContacto(data);
+    $('#formContacto').trigger("reset");
+  }
+  onDelete=function(item){
+    alert("Desea Borrar dato");
+    App.borrarContacto(item);
+  }
+  viewDetalle=function(item){
+    App.verContacto(item);
+  };
+
+
+});
+</script>
+
+</html>
