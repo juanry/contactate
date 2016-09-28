@@ -1,11 +1,10 @@
-detailView = Backbone.View.extend({
+detalleView = Backbone.View.extend({	
 	initialize: function()
 	{
-		this.listenTo(this.model, "change", this.render);
-
+		this.render();
 	},
 	render: function()
 	{
-		this.$el.html(_.template($('#fichaTemplate').html(),this.model.attributes));
+		this.$el.html(_.template($('#detalleTemplate').html(),this.model.attributes));
 	}
 });

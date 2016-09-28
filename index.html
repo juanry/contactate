@@ -18,6 +18,7 @@
   <script src="static/js/collections/contacto-collection.js"></script>
   <script src="static/js/views/contactos-list-view.js"></script>
   <script src="static/js/views/contacto-item-view.js"></script>
+  <script src="static/js/views/contacto-detail-view.js"></script>
   <script src="static/js/router.js"></script>
 </head>
 <body>
@@ -33,7 +34,7 @@
       <div class="card horizontal">
         <div class="card-stacked">
           <div class="card-content">
-            <table class="bordered" id="app">
+            <table class="striped"" id="app">
 
             </table>
           </div>
@@ -41,10 +42,10 @@
       </div>
     </div>
     <br><br>
+    
   </div>
   <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
-    <a class="btn-floating btn-large red waves-effect waves-light red modal-trigger" 
-    href="#modal-form-contacto">
+    <a class="btn-floating btn-large red waves-effect waves-light red modal-trigger" href="#modal-form-contacto">
       <i class="large material-icons">person_add</i>
     </a>
 
@@ -93,6 +94,17 @@
     <a onClick="onAdd()" class=" modal-action modal-close waves-effect waves-green btn-flat">Guardar</a>
   </div>
 </div>
+<!-- Modal Detalle contacto-->
+<div id="modal-detalle-contacto" class="modal">
+  <div class="modal-content" id="container-detalle">
+  
+  </div>
+  <div class="modal-footer">
+    <a class="modal-action modal-close waves-effect waves-green btn-flat">Cerrar</a>
+  </div>
+</div>
+<!--Fin detalle contacto -->
+
 <script src="static/js/vendor/materialize.js"></script>
 <script src="static/js/vendor/init.js"></script>
 <script type="text/javascript">
@@ -102,6 +114,16 @@ $(document).ready(function(){
 });
 </script>
 </body>
+<script type="text/template" id="detalleTemplate">
+  <h5>Contacto</h5>
+  <ul class="collection">
+  <li class="collection-item dismissable"><div><h4><%= nombre %> <%= apellido %></h4><label><h6><%= alias %></h6></label></div></li>
+    <li class="collection-item dismissable"><div><i class="Small material-icons">call</i> &nbsp;&nbsp; <%= telefono %></div></li>
+    <li class="collection-item dismissable"><div><i class="Small material-icons">email</i> &nbsp;&nbsp; <%= email %></div></li>
+    <li class="collection-item dismissable"><div><i class="Small material-icons">room</i> &nbsp;&nbsp; <%= direccion %></div></li>
+  </ul>
+
+</script>
 <script type="text/template" id="searchTemplate">
 
   <div class="row">

@@ -87,23 +87,26 @@ filterBy: function(filter)
 },
 agregarContacto: function(data){
   var contacto = new Contacto(data);
-  contacto.save();
   
-  this.activeList.fetch();
-  contactos.fetch({reset: true});
-  contactos.bind('reset',function(){
-    var contactoView = new ContactoListView({collection: this.activeList });
-  //regeneramos vista
-  contactoView.render();
-  });
-
+  contacto.save( null, {
+      success: function(model, response, options){
+          Materialize.toast("Contacto creado Correctamente!", 3000, 'rounded');
+          nuevo = new Contacto(response);
+          this.activeList.add(nuevo);
+      }
+  }
+  );  
 },
 borrarContacto: function(id){
+
   var data = this.activeList.get(id);
   this.activeList.remove(data);
 
 },
 verContacto: function(id){
   var data = this.activeList.get(id);
-}
+  var itemView = new detalleView({model: data});
+  $("#container-detalle").html(itemView.el);
+  $('#modal-detalle-contacto').openModal();
+  }
 }))();
