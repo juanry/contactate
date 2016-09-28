@@ -10,6 +10,6 @@ ContactoView = Backbone.View.extend({
 
 	render: function()
 	{
-		this.$el.html(_.template($('#fichaTemplate').html(),this.model.attributes));
+		this.$el.html(_.template($('#itemTemplate').html(),this.model.attributes));
 	}
 });
