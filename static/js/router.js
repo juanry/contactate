@@ -50,6 +50,7 @@ var App = new (Backbone.Router.extend({
     $('#app').html(contactoView.el);
     $('#app').append("<thead><tr><th data-field='nombre'>Nombre</th><th data-field='apellido'>Apellido</th><th data-field='telefono'>Telefono</th></tr></thead>");
   contactoView.render();
+  this.pagina();
 
 },
 detalle: function(){
@@ -108,5 +109,50 @@ verContacto: function(id){
   var itemView = new detalleView({model: data});
   $("#container-detalle").html(itemView.el);
   $('#modal-detalle-contacto').openModal();
-  }
+  },
+siguiente: function(){
+    this.contactoList.next();
+    this.contactoList.fetch();
+    this.activeList = this.contactoList;
+    this.pagina();
+    this.render();  
+  },
+  anterior: function(){
+    this.contactoList.previous();
+    this.contactoList.fetch();
+    this.activeList = this.contactoList;
+    this.pagina();
+    this.render();
+  },
+  primero: function(){
+    this.contactoList.first();
+    this.contactoList.fetch();
+    this.activeList = this.contactoList;
+    this.pagina();
+    this.render();
+  },
+  ultimo: function(){
+    this.contactoList.last();
+    this.contactoList.fetch();
+    this.activeList = this.contactoList;
+    this.pagina();
+    this.render();
+  },
+  filtrar: function(){
+    this.contactoList.filtrado();
+    this.contactoList.fetch();
+    this.activeList = this.contactoList;
+    this.pagina();
+    this.render();
+  },
+  //Esto puede que suba primero yo o como sea nomas jajaj
+  render: function(){
+    var contactoView = new ContactoListView({collection: this.activeList });
+    contactoView.render();
+    $('#app').html(contactoView.el);
+    $('#app').append("<thead><tr><th data-field='nombre'>Nombre</th><th data-field='apellido'>Apellido</th><th data-field='telefono'>Telefono</th></tr></thead>");
+  },
+  pagina: function(){
+    $('#cantRegistros').text((inicio+1)+" - "+(inicio+cantidad)+" de "+ultimo);
+  } 
 }))();

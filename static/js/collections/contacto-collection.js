@@ -1,12 +1,25 @@
+var inicio = 0;
+var cantidad = 5;
+var filtro;
+var ultimo;
 var ContactoList = Backbone.Collection.extend({
 
 	model: Contacto,
 	url: "http://localhost:1337/163.172.218.124/pwf/rest/agenda",
 	sortField: "apellido",
-	
+	url: function(){
+		if(filtro === '' || typeof filtro === 'undefined'){
+			return "http://163.172.218.124/pwf/rest/agenda?inicio="+inicio+"&cantidad="+cantidad+"&filtro=";	
+		}else{
+			return "http://163.172.218.124/pwf/rest/agenda?inicio="+inicio+"&cantidad="+cantidad+"&filtro="+filtro;
+		}
+		
+	},
 	parse: function(data) {
+		ultimo = data.total;
     	return data.lista;
   	},
+
 
 	comparator: function (contacto1, contacto2)
 	{
@@ -23,5 +36,27 @@ var ContactoList = Backbone.Collection.extend({
 		});
 		var coll = new ContactoList(filteredList);
 		return coll;
+	},
+	first:function(){
+		inicio=0;
+	},
+	next: function(){
+		if(inicio+cantidad<=ultimo){
+			inicio+=cantidad;	
+		}
+		
+	},
+	previous: function(){
+		
+		if(inicio != 0 ){
+			inicio-=cantidad;
+		}
+	},
+	last:function(){
+		inicio = ultimo - (ultimo%cantidad);
+	},
+	filtrado: function(){
+		console.log($('#search').val());
+		filtro=$('#search').val();
 	}
 });
