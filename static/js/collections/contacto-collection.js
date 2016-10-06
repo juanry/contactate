@@ -1,10 +1,13 @@
 var inicio = 0;
-var cantidad = 5;
+var cantidad = 20;
 var filtro;
 var ultimo;
-var ContactoList = Backbone.Collection.extend({	
+
+var ContactoList = Backbone.Collection.extend({
+	
 	model: Contacto,
 	sortField: "apellido",
+	
 	url: function(){
 		if(filtro === '' || typeof filtro === 'undefined'){
 			return "http://163.172.218.124/pwf/rest/agenda?inicio="+inicio+"&cantidad="+cantidad+"&filtro=";	
@@ -17,7 +20,6 @@ var ContactoList = Backbone.Collection.extend({
 		ultimo = data.total;
     	return data.lista;
   	},
-
 
 	comparator: function (contacto1, contacto2)
 	{

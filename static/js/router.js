@@ -36,6 +36,8 @@ var App = new (Backbone.Router.extend({
 
     $('#app').html(contactoView.el);
     $('#app').append("<thead><tr><th data-field='nombre'>Nombre</th><th data-field='apellido'>Apellido</th><th data-field='telefono'>Telefono</th></tr></thead>");
+    contactoView.render();
+    this.pagina();
   },
   
   render: function(){
@@ -73,93 +75,47 @@ var App = new (Backbone.Router.extend({
           $('#modal-form-contacto').closeModal();
           App.modificarContacto(model.id);
       }
-      });  
+    }); 
   },
-  siguiente: function(){
-      this.contactoList.next();
-      this.contactoList.fetch();
-      this.activeList = this.contactoList;
-      this.pagina();
-      this.render();  
-    },
-    anterior: function(){
-      this.contactoList.previous();
-      this.contactoList.fetch();
-      this.activeList = this.contactoList;
-      this.pagina();
-      this.render();
-    },
-    primero: function(){
-      this.contactoList.first();
-      this.contactoList.fetch();
-      this.activeList = this.contactoList;
-      this.pagina();
-      this.render();
-    },
-    ultimo: function(){
-      this.contactoList.last();
-      this.contactoList.fetch();
-      this.activeList = this.contactoList;
-      this.pagina();
-      this.render();
-    },
-    filtrar: function(){
-      this.contactoList.filtrado();
-      this.contactoList.fetch();
-      this.activeList = this.contactoList;
-      this.pagina();
-      this.render();
-    },
-    //Esto puede que suba primero yo o como sea nomas jajaj
-    render: function(){
-      var contactoView = new ContactoListView({collection: this.activeList });
-      contactoView.render();
-      $('#app').html(contactoView.el);
-      $('#app').append("<thead><tr><th data-field='nombre'>Nombre</th><th data-field='apellido'>Apellido</th><th data-field='telefono'>Telefono</th></tr></thead>");
-    },
-    pagina: function(){
-      $('#cantRegistros').text((inicio+1)+" - "+(inicio+cantidad)+" de "+ultimo);
-     
-    },
-    borrarContacto: function(id){
-      var data = this.activeList.get(id);
-      this.activeList.remove(data);
-      data.destroy(null, {
-        success:function(model, response, options){
-          Materialize.toast("Contacto borrado!", 3000, 'rounded');
-        }
-      });
-    },
-    verContacto: function(id){
-      var data = this.activeList.get(id);
-      var itemView = new detalleView({model: data});
-      $("#container-detalle").html(itemView.el);
-      $('#modal-detalle-contacto').openModal();
-    },
-    modificarContacto: function(id){
-      var data = new Contacto({id:id});
-      data.fetch({
-        success:function(){
-          var itemView = new updateView({model: data});
-          $("#update-content").html(itemView.el);
-          $('#modal-update-contacto').openModal();    
-        }
-      });
-      
-    },
-    guardarModificacion: function(id){
-      var data = new Contacto({id:id});
-      data.fetch();
-      data.attributes.nombre = $("#editContacto").find('#nombre').val();
-      data.attributes.apellido = $("#editContacto").find('#apellido').val();
-      data.attributes.alias = $("#editContacto").find('#alias').val();
-      data.attributes.direccion = $("#editContacto").find('#direccion').val();
-      data.attributes.telefono = $("#editContacto").find('#telefono').val();
-      data.attributes.email = $("#editContacto").find('#email').val();
-      data.save( null, {
-        success: function(model, response, options){
-            Materialize.toast("Contacto Modifcado Correctamente!", 3000, 'rounded');
-        }
-      }); 
-    }
+  borrarContacto: function(id){
+    var data = this.activeList.get(id);
+    this.activeList.remove(data);
+    data.destroy(null, {
+      success:function(model, response, options){
+        Materialize.toast("Contacto borrado!", 3000, 'rounded');
+      }
+    });
+  },
+  verContacto: function(id){
+    var data = this.activeList.get(id);
+    var itemView = new detalleView({model: data});
+    $("#container-detalle").html(itemView.el);
+    $('#modal-detalle-contacto').openModal();
+  },
+  modificarContacto: function(id){
+    var data = new Contacto({id:id});
+    data.fetch({
+      success:function(){
+        var itemView = new updateView({model: data});
+        $("#update-content").html(itemView.el);
+        $('#modal-update-contacto').openModal();    
+      }
+    });
+    
+  },
+  guardarModificacion: function(id){
+    var data = new Contacto({id:id});
+    data.fetch();
+    data.attributes.nombre = $("#editContacto").find('#nombre').val();
+    data.attributes.apellido = $("#editContacto").find('#apellido').val();
+    data.attributes.alias = $("#editContacto").find('#alias').val();
+    data.attributes.direccion = $("#editContacto").find('#direccion').val();
+    data.attributes.telefono = $("#editContacto").find('#telefono').val();
+    data.attributes.email = $("#editContacto").find('#email').val();
+    data.save( null, {
+      success: function(model, response, options){
+          Materialize.toast("Contacto Modifcado Correctamente!", 3000, 'rounded');
+      }
+    }); 
+  }
 }))();
