@@ -22,3 +22,7 @@
  	font-size: inherit;
  }
 .material-icons.blue600 { color: #5193EE; }
+
+.material-icons.link{
+	cursor: pointer;
+}

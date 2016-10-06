@@ -2,14 +2,12 @@
 <html>
 <head>
   <meta charset="utf-8">
-
   <title>Contactate - Tu lista de contactos</title>
   <!-- CSS & ICON  -->
   <link rel="shortcut icon" type="image/x-icon" href="static/img/icon.png" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="static/css/vendor/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="static/css/vendor/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-
   <!-- SCRIPTS  -->
   <script src="static/js/vendor/jquery-3.1.0.min.js"></script>
   <script src="static/js/vendor/underscore-min.js"></script>
@@ -19,6 +17,7 @@
   <script src="static/js/views/contactos-list-view.js"></script>
   <script src="static/js/views/contacto-item-view.js"></script>
   <script src="static/js/views/contacto-detail-view.js"></script>
+  <script src="static/js/views/contacto-form-view.js"></script>
   <script src="static/js/router.js"></script>
 </head>
 <body>
@@ -29,19 +28,27 @@
   </nav>
   <div id="ui">
   </div>
-  <div class="container">
+  <div class="container">    
+    <div class="row">
+      <div class="col s2"><p id="cantRegistros"></p></div>
+      <div class="col s2"></div>
+      <div class="col s1"> <i id="prim" class="Small material-icons blue600 link" onClick="App.primero()">fast_rewind</i> </div>
+      <div class="col s1"> <i id="ant" class="Small material-icons blue600 link" onClick="App.anterior()">skip_previous</i> </div>
+      <div class="col s1"> <i id="sgte" class="Small material-icons blue600 link" onClick="App.siguiente()">skip_next</i> </div>
+      <div class="col s1"> <i id="ult" class="Small material-icons blue600 link" onClick="App.ultimo()">fast_forward</i>  </div>
+      <div class="col s4"></div>
+    </div>
     <div class="col s12 m7" id="listaContactos">
       <div class="card horizontal">
         <div class="card-stacked">
           <div class="card-content">
             <table class="striped"" id="app">
-
             </table>
           </div>
         </div>
       </div>
     </div>
-    <br><br>
+    
     
   </div>
   <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
@@ -94,30 +101,36 @@
     <a onClick="onAdd()" class=" modal-action modal-close waves-effect waves-green btn-flat">Guardar</a>
   </div>
 </div>
+<!-- Modal Update Contacto -->
+<div id="modal-update-contacto" class="modal">
+  <div class="modal-content" id="update-content">
+    
+  </div>
+</div>
+<!-- fin Update Contacto -->
 <!-- Modal Detalle contacto-->
 <div id="modal-detalle-contacto" class="modal">
   <div class="modal-content" id="container-detalle">
-  
+
   </div>
   <div class="modal-footer">
     <a class="modal-action modal-close waves-effect waves-green btn-flat">Cerrar</a>
   </div>
 </div>
 <!--Fin detalle contacto -->
-
 <script src="static/js/vendor/materialize.js"></script>
 <script src="static/js/vendor/init.js"></script>
 <script type="text/javascript">
-$(document).ready(function(){
-  $('select').material_select();
-  $('.modal-trigger').leanModal();
-});
+  $(document).ready(function(){
+    $('select').material_select();
+    $('.modal-trigger').leanModal();
+  });
 </script>
 </body>
 <script type="text/template" id="detalleTemplate">
   <h5>Contacto</h5>
   <ul class="collection">
-  <li class="collection-item dismissable"><div><h4><%= nombre %> <%= apellido %></h4><label><h6><%= alias %></h6></label></div></li>
+    <li class="collection-item dismissable"><div><h4><%= nombre %> <%= apellido %></h4><label><h6><%= alias %></h6></label></div></li>
     <li class="collection-item dismissable"><div><i class="Small material-icons">call</i> &nbsp;&nbsp; <%= telefono %></div></li>
     <li class="collection-item dismissable"><div><i class="Small material-icons">email</i> &nbsp;&nbsp; <%= email %></div></li>
     <li class="collection-item dismissable"><div><i class="Small material-icons">room</i> &nbsp;&nbsp; <%= direccion %></div></li>
@@ -127,55 +140,68 @@ $(document).ready(function(){
 <script type="text/template" id="searchTemplate">
 
   <div class="row">
-    <form class="col s3">
-      <div class="input-field">
-        <input id="search" placeholder="Nombre o Apellido" onKeyUp="onTituloFilter()" value='<%= filter %>'>
-        <label for="search"><i class="material-icons blue600">search</i></label>
+    <form class="col s6">
+      <div class="input-field col s6">
+        <i class="Small material-icons prefix blue600">search</i>
+        <input id="search" placeholder="Nombre o Apellido" onKeyUp="App.filtrar()" value='<%= filter %>'>
       </div>
     </form>
-    <div class="col s8"></div>
-    <div class="input-field col s1">
-      <select onChange="onChangeSortOrder()" id="sortField">
-        <option <% if(sortField === "nombre"){ %> selected <% } %> value="nombre">Nombre</option>
-        <option <% if(sortField === "apellido"){ %> selected <% } %> value="apellido">Apellido</option>
-      </select>
-    </div>
   </div>
+
 </script>
 <script type="text/template" id="itemTemplate">
 
   <td><%= nombre %></td>
   <td><%= apellido %></td>
   <td><%= telefono %></td>
-  <td><a onClick="onDelete(<%= id %>)"><i class="Tiny material-icons">delete</i></a>
-      <a onClick="viewDetalle(<%= id %>)"><i class="Tiny material-icons">info</i></a>
+  <td><a onClick="onDelete(<%= id %>)"><i class="Tiny material-icons link">delete</i></a>
+    <a onClick="viewDetalle(<%= id %>)"><i class="Tiny material-icons link">info</i></a>
+    <a onClick="App.modificarContacto(<%= id %>)"><i class="Tiny material-icons link">edit</i></a>
   </td>
 
 </script>
-
-<script type="text/template" id="fichaTemplate">
-  <a href="#/contacto">< volver</a>
-  <h2><%= nombre %></h2>
-  <p>
-    <br/><br/>
-    by <strong><%= apellido %></strong>
-    <br/><br/>
-    <i><%= telefono %></i>
-  </p>
+<script type="text/template" id="editaFormulario">
+  <form class="col s12" id="editContacto" method="post">
+    <div class="row">
+      <div class="input-field col s4">
+        <i class="material-icons prefix blue600">account_circle</i>
+        <input placeholder="Añade un nombre" id="nombre" type="text" class="validate" value="<%= nombre %>">
+      </div>
+      <div class="input-field col s4">
+        <input id="apellido" placeholder="Añade un apellido" type="text" class="validate" value="<%= apellido %>">
+      </div>
+      <div class="input-field col s4">
+        <input id="alias" placeholder="Añade un Alias" type="text" class="validate" value="<%= alias %>">
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s4">
+        <i class="material-icons prefix blue600">email</i>
+        <input id="email" placeholder="Añade un correo" type="email" class="validate" value="<%= email %>">
+      </div>
+      <div class="input-field col s4">
+        <i class="material-icons prefix blue600">call</i>
+        <input id="telefono" placeholder="Añade un numero de telefono" type="tel" class="validate" value="<%= telefono %>">
+      </div>
+      <div class="input-field col s4">
+        <i class="material-icons prefix blue600">location_on</i>
+        <input id="direccion" placeholder="Añade una dirección" type="text" class="validate" value="<%= direccion %>">
+      </div>
+    </div>
+  </form>
+  <a onClick="App.guardarModificacion(<%= id %>)" class=" modal-action modal-close waves-effect waves-green btn-flat">Guardar</a>
 </script>
-
-
 <script type="text/javascript">
-$(	function(){
+  $(	function(){
 
-  var contactos = new ContactoList();
-  contactos.fetch({reset: true});
-  contactos.bind('reset',function(){
-    var bootstrap = {
-      data: contactos.models,
-    };
-    App.start(bootstrap);
-  });
+    var contactos = new ContactoList();
+    contactos.fetch({reset: true});
+    contactos.bind('reset',function(){
+      var bootstrap = {
+        data: contactos.models,
+      };
+      App.start(bootstrap);
+    });
 
   //ui event listeners
   onChangeSortOrder = function()
@@ -192,23 +218,23 @@ $(	function(){
   {
     var data = {};
     $("#formContacto").find(':input').each(function() {
-         var elemento= this;
-         data[elemento.id] = elemento.value;
+     var elemento= this;
+     data[elemento.id] = elemento.value;
 
-       });
+   });
     App.agregarContacto(data);
     $('#formContacto').trigger("reset");
   }
   onDelete=function(item){
-    alert("Desea Borrar dato");
-    App.borrarContacto(item);
+    var r = confirm("Desea Borrar datos?");
+    if (r == true) {
+      App.borrarContacto(item);
+    }    
   }
   viewDetalle=function(item){
     App.verContacto(item);
-  };
-
+  }
 
 });
 </script>
-
 </html>

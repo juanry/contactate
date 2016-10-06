@@ -9,5 +9,5 @@ var Contacto = Backbone.Model.extend({
         "fechacreacion": "",
         "fechamodificacion": null
     },
-	urlRoot: 'http://localhost:1337/163.172.218.124/pwf/rest/agenda'
+	urlRoot: 'http://163.172.218.124/pwf/rest/agenda'
 });
