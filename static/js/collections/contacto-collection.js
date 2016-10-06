@@ -2,10 +2,8 @@ var inicio = 0;
 var cantidad = 5;
 var filtro;
 var ultimo;
-var ContactoList = Backbone.Collection.extend({
-
+var ContactoList = Backbone.Collection.extend({	
 	model: Contacto,
-	url: "http://localhost:1337/163.172.218.124/pwf/rest/agenda",
 	sortField: "apellido",
 	url: function(){
 		if(filtro === '' || typeof filtro === 'undefined'){
@@ -29,7 +27,7 @@ var ContactoList = Backbone.Collection.extend({
 	{
 		if(letters === "") return this;
 	
-	var pattern = new RegExp(letters,'i');
+		var pattern = new RegExp(letters,'i');
 		var filteredList = this.filter(function(data)
 		{
 			return (pattern.test( data.get('nombre') + "  "+data.get('apellido') ));
@@ -60,3 +58,5 @@ var ContactoList = Backbone.Collection.extend({
 		filtro=$('#search').val();
 	}
 });
+
+

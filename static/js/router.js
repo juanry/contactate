@@ -1,9 +1,7 @@
-
-
 var App = new (Backbone.Router.extend({
-  nextID: 4,
+  
   routes: {
-    "contactos/:id": "detalle",
+    
     "contactos/": "index",
     "*any" : "redirect"
   },
@@ -13,33 +11,22 @@ var App = new (Backbone.Router.extend({
   },
 
   start: function(bootstrap){
-
-    //creamos lista de libros sin filtrar
-    //mediante bootstrapping :)
     this.contactoList = new ContactoList(bootstrap.data);
-
-    //lista filtrada que se usará para generar las vistas
     this.activeList = null;
-
     this.filter='';
-
     Backbone.history.start();
   },
-
+  
   redirect: function()
   {
-    //redirigimos a ruta inicial
     this.navigate("contactos/",true);
   },
 
   index: function(){
-
-    //initialize
     if(!this.activeList)
       this.activeList = new ContactoList(this.contactoList.models);
 
     var contactoView = new ContactoListView({collection: this.activeList});
-
     //generamos vista
     $('#ui').html(_.template($('#searchTemplate').html(),
     //escape to prevent XSS attack
@@ -49,103 +36,8 @@ var App = new (Backbone.Router.extend({
 
     $('#app').html(contactoView.el);
     $('#app').append("<thead><tr><th data-field='nombre'>Nombre</th><th data-field='apellido'>Apellido</th><th data-field='telefono'>Telefono</th></tr></thead>");
-  contactoView.render();
-  this.pagina();
-
-},
-detalle: function(){
-
-},
-//ordenar por attr field en order order
-sortBy: function(field)
-{
-  this.activeList.sortField = field;
-  this.activeList.sortOrder = "asc";
-
-  this.activeList.sort();
-},
-
-//filtrar libros
-filterBy: function(filter)
-{
-  this.filter = filter;
-
-  //"remember" sort options
-  var field = this.activeList.sortField;
-  var order = this.activeList.sortOrder;
-  this.activeList = this.contactoList.search(this.filter);
-  //sort results
-  this.activeList.sortField = field;
-  this.activeList.sortOrder = order;
-  this.activeList.sort();
-
-  //creamos nueva vista con datos filtrados
-  var contactoView = new ContactoListView({collection: this.activeList });
-  //regeneramos vista
-  contactoView.render();
-  $('#app').html(contactoView.el);
-  $('#app').append("<thead><tr><th data-field='nombre'>Nombre</th><th data-field='apellido'>Apellido</th><th data-field='telefono'>Telefono</th></tr></thead>");
-},
-agregarContacto: function(data){
-  var contacto = new Contacto(data);
+  },
   
-  contacto.save( null, {
-      success: function(model, response, options){
-          Materialize.toast("Contacto creado Correctamente!", 3000, 'rounded');
-          nuevo = new Contacto(response);
-          this.activeList.add(nuevo);
-      }
-  }
-  );  
-},
-borrarContacto: function(id){
-
-  var data = this.activeList.get(id);
-  this.activeList.remove(data);
-
-},
-verContacto: function(id){
-  var data = this.activeList.get(id);
-  var itemView = new detalleView({model: data});
-  $("#container-detalle").html(itemView.el);
-  $('#modal-detalle-contacto').openModal();
-  },
-siguiente: function(){
-    this.contactoList.next();
-    this.contactoList.fetch();
-    this.activeList = this.contactoList;
-    this.pagina();
-    this.render();  
-  },
-  anterior: function(){
-    this.contactoList.previous();
-    this.contactoList.fetch();
-    this.activeList = this.contactoList;
-    this.pagina();
-    this.render();
-  },
-  primero: function(){
-    this.contactoList.first();
-    this.contactoList.fetch();
-    this.activeList = this.contactoList;
-    this.pagina();
-    this.render();
-  },
-  ultimo: function(){
-    this.contactoList.last();
-    this.contactoList.fetch();
-    this.activeList = this.contactoList;
-    this.pagina();
-    this.render();
-  },
-  filtrar: function(){
-    this.contactoList.filtrado();
-    this.contactoList.fetch();
-    this.activeList = this.contactoList;
-    this.pagina();
-    this.render();
-  },
-  //Esto puede que suba primero yo o como sea nomas jajaj
   render: function(){
     var contactoView = new ContactoListView({collection: this.activeList });
     contactoView.render();
@@ -154,5 +46,120 @@ siguiente: function(){
   },
   pagina: function(){
     $('#cantRegistros').text((inicio+1)+" - "+(inicio+cantidad)+" de "+ultimo);
-  } 
+  },
+  sortBy: function(field)
+  {
+    this.activeList.sortField = field;
+    this.activeList.sortOrder = "asc";
+    this.activeList.sort();
+    this.render();
+  },
+  filterBy: function(filter)
+  {
+    this.filter = filter;
+    var field = this.activeList.sortField;
+    var order = this.activeList.sortOrder;
+    this.activeList = this.contactoList.search(this.filter);
+    this.activeList.sortField = field;
+    this.activeList.sortOrder = order;
+    this.activeList.sort();
+    this.render();
+  },
+  agregarContacto: function(data){
+    var contacto = new Contacto(data);
+    contacto.save( null, {
+      success: function(model, response, options){
+          Materialize.toast("Contacto creado Correctamente!", 3000, 'rounded');
+          $('#modal-form-contacto').closeModal();
+          App.modificarContacto(model.id);
+      }
+      });  
+  },
+  siguiente: function(){
+      this.contactoList.next();
+      this.contactoList.fetch();
+      this.activeList = this.contactoList;
+      this.pagina();
+      this.render();  
+    },
+    anterior: function(){
+      this.contactoList.previous();
+      this.contactoList.fetch();
+      this.activeList = this.contactoList;
+      this.pagina();
+      this.render();
+    },
+    primero: function(){
+      this.contactoList.first();
+      this.contactoList.fetch();
+      this.activeList = this.contactoList;
+      this.pagina();
+      this.render();
+    },
+    ultimo: function(){
+      this.contactoList.last();
+      this.contactoList.fetch();
+      this.activeList = this.contactoList;
+      this.pagina();
+      this.render();
+    },
+    filtrar: function(){
+      this.contactoList.filtrado();
+      this.contactoList.fetch();
+      this.activeList = this.contactoList;
+      this.pagina();
+      this.render();
+    },
+    //Esto puede que suba primero yo o como sea nomas jajaj
+    render: function(){
+      var contactoView = new ContactoListView({collection: this.activeList });
+      contactoView.render();
+      $('#app').html(contactoView.el);
+      $('#app').append("<thead><tr><th data-field='nombre'>Nombre</th><th data-field='apellido'>Apellido</th><th data-field='telefono'>Telefono</th></tr></thead>");
+    },
+    pagina: function(){
+      $('#cantRegistros').text((inicio+1)+" - "+(inicio+cantidad)+" de "+ultimo);
+     
+    },
+    borrarContacto: function(id){
+      var data = this.activeList.get(id);
+      this.activeList.remove(data);
+      data.destroy(null, {
+        success:function(model, response, options){
+          Materialize.toast("Contacto borrado!", 3000, 'rounded');
+        }
+      });
+    },
+    verContacto: function(id){
+      var data = this.activeList.get(id);
+      var itemView = new detalleView({model: data});
+      $("#container-detalle").html(itemView.el);
+      $('#modal-detalle-contacto').openModal();
+    },
+    modificarContacto: function(id){
+      var data = new Contacto({id:id});
+      data.fetch({
+        success:function(){
+          var itemView = new updateView({model: data});
+          $("#update-content").html(itemView.el);
+          $('#modal-update-contacto').openModal();    
+        }
+      });
+      
+    },
+    guardarModificacion: function(id){
+      var data = new Contacto({id:id});
+      data.fetch();
+      data.attributes.nombre = $("#editContacto").find('#nombre').val();
+      data.attributes.apellido = $("#editContacto").find('#apellido').val();
+      data.attributes.alias = $("#editContacto").find('#alias').val();
+      data.attributes.direccion = $("#editContacto").find('#direccion').val();
+      data.attributes.telefono = $("#editContacto").find('#telefono').val();
+      data.attributes.email = $("#editContacto").find('#email').val();
+      data.save( null, {
+        success: function(model, response, options){
+            Materialize.toast("Contacto Modifcado Correctamente!", 3000, 'rounded');
+        }
+      }); 
+    }
 }))();
