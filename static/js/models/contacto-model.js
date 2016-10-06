@@ -9,5 +9,5 @@ var Contacto = Backbone.Model.extend({
         "fechacreacion": "",
         "fechamodificacion": null
     },
-	urlRoot: 'http://163.172.218.124/pwf/rest/agenda'
+	urlRoot: 'https://desa03.konecta.com.py/pwf/rest/agenda'
 });
