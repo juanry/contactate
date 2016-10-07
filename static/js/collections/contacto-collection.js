@@ -10,9 +10,9 @@ var ContactoList = Backbone.Collection.extend({
 	
 	url: function(){
 		if(filtro === '' || typeof filtro === 'undefined'){
-			return "http://163.172.218.124/pwf/rest/agenda?inicio="+inicio+"&cantidad="+cantidad+"&filtro=";	
+			return "https://desa03.konecta.com.py/pwf/rest/agenda?inicio="+inicio+"&cantidad="+cantidad+"&filtro=";	
 		}else{
-			return "http://163.172.218.124/pwf/rest/agenda?inicio="+inicio+"&cantidad="+cantidad+"&filtro="+filtro;
+			return "https://desa03.konecta.com.py/pwf/rest/agenda?inicio="+inicio+"&cantidad="+cantidad+"&filtro="+filtro;
 		}
 		
 	},
