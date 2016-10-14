@@ -69,14 +69,14 @@
 <div id="modal-form-contacto" class="modal">
   <div class="modal-content ">
     <h5 id="tituloModal">Agregar Contacto</h5>
-    <form class="col s12" id="formContacto" method="post">
+    <form class="col s12" id="formContacto" method="post" action="javascript:onAdd()">
       <div class="row">
         <div class="input-field col s4">
           <i class="material-icons prefix blue600">account_circle</i>
-          <input placeholder="Añade un nombre" id="nombre" type="text" class="validate">
+          <input placeholder="Añade un nombre" id="nombre" type="text" class="validate" required>
         </div>
         <div class="input-field col s4">
-          <input id="apellido" placeholder="Añade un apellido" type="text" class="validate">
+          <input id="apellido" placeholder="Añade un apellido" type="text" class="validate" required >
         </div>
         <div class="input-field col s4">
           <input id="alias" placeholder="Añade un Alias" type="text" class="validate">
@@ -85,21 +85,25 @@
       <div class="row">
         <div class="input-field col s4">
           <i class="material-icons prefix blue600">email</i>
-          <input id="email" placeholder="Añade un correo" type="email" class="validate">
+          <input id="email" placeholder="Añade un correo" type="email" class="validate" required>
         </div>
         <div class="input-field col s4">
           <i class="material-icons prefix blue600">call</i>
-          <input id="telefono" placeholder="Añade un numero de telefono" type="tel" class="validate">
+          <input id="telefono" placeholder="Añade un numero de telefono" type="tel" class="validate" required>
         </div>
         <div class="input-field col s4">
           <i class="material-icons prefix blue600">location_on</i>
-          <input id="direccion" placeholder="Añade una dirección" type="text" class="validate">
+          <input id="direccion" placeholder="Añade una dirección" type="text" class="validate" >
         </div>
       </div>
+      <div class="row">
+        <div class="col s10"></div>
+        <div class="col s2">
+          <input type="submit" name="Guardar" class="modal-action modal-close waves-effect waves-green btn-flat" >  
+        </div>
+       
+      </div>
     </form>
-  </div>
-  <div class="modal-footer">
-    <a onClick="onAdd()" class=" modal-action modal-close waves-effect waves-green btn-flat">Guardar</a>
   </div>
 </div>
 <!-- Modal Update Contacto -->
