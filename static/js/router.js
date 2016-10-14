@@ -117,5 +117,40 @@ var App = new (Backbone.Router.extend({
           Materialize.toast("Contacto Modifcado Correctamente!", 3000, 'rounded');
       }
     }); 
-  }
+  },
+  siguiente: function(){
+      this.contactoList.next();
+      this.contactoList.fetch();
+      this.activeList = this.contactoList;
+      this.pagina();
+      this.render();  
+    },
+    anterior: function(){
+      this.contactoList.previous();
+      this.contactoList.fetch();
+      this.activeList = this.contactoList;
+      this.pagina();
+      this.render();
+    },
+    primero: function(){
+      this.contactoList.first();
+      this.contactoList.fetch();
+      this.activeList = this.contactoList;
+      this.pagina();
+      this.render();
+    },
+    ultimo: function(){
+      this.contactoList.last();
+      this.contactoList.fetch();
+      this.activeList = this.contactoList;
+      this.pagina();
+      this.render();
+    },
+    filtrar: function(){
+      this.contactoList.filtrado();
+      this.contactoList.fetch();
+      this.activeList = this.contactoList;
+      this.pagina();
+      this.render();
+    },
 }))();
